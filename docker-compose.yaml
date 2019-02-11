@@ -1,0 +1,52 @@
+# Use this compose file to setup local development environment
+version: '3.6' # defines file features
+services:
+  webAdmin:
+    image: dnatrack/web/admin
+    environment:
+      "Rabbit:Endpoint": "rabbitmq://rmq:5672"
+      "Rabbit:Username": "rabbitmq"
+      "Rabbit:Password": "rabbitmq"
+    restart: always
+    ports:
+      - "8800:80"
+    #volumes:
+      #- d:/sources/k8s/kube-for-dot-net-master/docker/task-3/appsettings.json:/etc/config/appsettings.json ro      
+      #- ./appsettings.json:/etc/config/appsettings.json ro      
+  
+  webClient:
+    image: dnatrack/web/client
+    environment:
+      "Mongo:Endpoint": "mongodb://mongo:27017"
+      "Mongo:Database": "dnaTrack"
+    restart: always
+    ports:
+      - "8880:80"
+    
+  serviceAnal:
+    image: dnatrack/services/anal
+    environment:
+      "Mongo:Endpoint": "mongodb://mongo:27017"
+      "Mongo:Database": "dnaTrack"
+      "Rabbit:Endpoint": "rabbitmq://rmq:5672"
+      "Rabbit:Username": "rabbitmq"
+      "Rabbit:Password": "rabbitmq"
+    restart: always      
+    
+  rmq:
+    image: "rabbitmq:3-management"
+    environment:
+      RABBITMQ_DEFAULT_USER: "rabbitmq"
+      RABBITMQ_DEFAULT_PASS: "rabbitmq"
+      RABBITMQ_DEFAULT_VHOST: "/"
+    restart: always
+    ports:
+      - "15672:15672"
+      - "5672:5672"
+      
+  mongo:
+    image: mongo:4.0.5
+    restart: always
+    ports: 
+      - "27017:27017"    
+ 
