@@ -10,6 +10,9 @@ services:
     restart: always
     ports:
       - "8800:80"
+    depends_on:
+      - rmq
+      - mongo  
     #volumes:
       #- d:/sources/k8s/kube-for-dot-net-master/docker/task-3/appsettings.json:/etc/config/appsettings.json ro      
       #- ./appsettings.json:/etc/config/appsettings.json ro      
@@ -22,6 +25,8 @@ services:
     restart: always
     ports:
       - "8880:80"
+    depends_on:
+      - mongo    
     
   serviceAnal:
     image: dnatrack/services/anal
@@ -31,7 +36,10 @@ services:
       "Rabbit:Endpoint": "rabbitmq://rmq:5672"
       "Rabbit:Username": "rabbitmq"
       "Rabbit:Password": "rabbitmq"
-    restart: always      
+    restart: always
+    depends_on:
+      - rmq
+      - mongo     
     
   rmq:
     image: "rabbitmq:3-management"
